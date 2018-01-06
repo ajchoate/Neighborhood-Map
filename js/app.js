@@ -115,7 +115,7 @@ var ViewModel = {
 					for (var i = 0; i < Model.markers.length; i++) {
 						Model.markers[i].setMap(map);
 						bounds.extend(Model.markers[i].position);
-					};
+					}
 	 	    	},
 	 	    	error: function(data) {
 	 	    		// Create alert if API request fails.
@@ -123,7 +123,7 @@ var ViewModel = {
 	 	  		}
 		 	});
 			infowindow.open(map, marker);
-		};
+		}
 	},
 	// Function to allow places list items to trigger the click event and open info window.
 	clickMarker: function(marker) {
@@ -138,7 +138,7 @@ var ViewModel = {
 			for (var i = 0; i < array.length; i++) {
 				ViewModel.markerInitialize(array, i, largeInfowindow);
 			}
-		};
+		}
 		createMarkers(Model.libraries);
 		createMarkers(Model.restaurants);
 	},
@@ -148,7 +148,7 @@ var ViewModel = {
 		for (var i = 0; i < Model.markers.length; i++) {
 			Model.markers[i].setMap(map);
 			bounds.extend(Model.markers[i].position);
-		};
+		}
 		map.fitBounds(bounds);
 		ul = document.getElementById("placesList");
 		li = ul.getElementsByTagName("li");
@@ -161,7 +161,7 @@ var ViewModel = {
 	hidePlaces: function() {
 		for (var i = 0; i < Model.markers.length; i++) {
 			Model.markers[i].setMap(null);
-		};
+		}
 		ul = document.getElementById("placesList");
 		li = ul.getElementsByTagName("li");
 		for (i = 0; i < li.length; i++) {
@@ -209,4 +209,4 @@ function initMap() {
 
 	ViewModel.populateMap();
 	ko.applyBindings(ViewModel);
-};
+}
