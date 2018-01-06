@@ -38,11 +38,11 @@ li {
 }
 
 #map {
-    bottom:0px;
+    bottom:0;
     height: 100%;
     left: 350px;
     position: absolute;
-    right: 0px;
+    right: 0;
 }
 
 @media screen and (max-width: 450px) {
@@ -51,7 +51,7 @@ li {
 		width: 0;
 		position: fixed;
 		top: 0;
-		left: 0px;
+		left: 0;
 		overflow-x: hidden;
 		padding-top: 60px;
 		transition: 0.5s;
@@ -102,11 +102,11 @@ li {
 	}
 
 	#map {
-	    bottom:0px;
+	    bottom:0;
 	    height: 95%;
 	    left: 0;
 	    position: absolute;
-	    right: 0px;
+	    right: 0;
 	}
 }
 
