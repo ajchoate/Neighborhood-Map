@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Neighborhood Map</title>
-	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 	<div class="container">
@@ -16,9 +17,9 @@
 			<a href="javascript:void(0)" id="closeBtn" data-bind="click: closeSidebar">&times;</a>
 			<button data-bind="click: showPlaces">Show Places</button>
 			<button data-bind="click: hidePlaces">Hide Places</button>
-			<input id="listFilter" data-bind="event: {keyup: filterPlaces}" placeholder="Filter list...">
-			<ul id="placesList" data-bind="foreach: Model.markers">
-				<li><a data-bind="text: title, click: $parent.clickMarker"></a></li>
+			<input data-bind="textInput: filter, event: {keyup: filterPlaces}" placeholder="Filter list...">
+			<ul id="placesList" data-bind="foreach: places">
+				<li data-bind="text: isVisible, click: $parent.clickMarker, visible: isVisible"></li>
 			</ul>
 		</div>
 		<div id="map"></div>
@@ -26,6 +27,6 @@
 	<script src="js/knockout-v3.4.2.js"></script>
 	<script src="js/jquery.min.js"></script>
 	<script src="js/app.js"></script>
-	<script async defer src="https://maps.googleapis.com/maps/api/js?libraries=places,geometry&key=AIzaSyB0RA_8ohHqtwugTw4FT6mcHdihXBZeg9Q&v=3&callback=initMap"></script>
+	<script async defer src="https://maps.googleapis.com/maps/api/js?libraries=places,geometry&key=AIzaSyB0RA_8ohHqtwugTw4FT6mcHdihXBZeg9Q&v=3&callback=initMap" onerror="ViewModel.mapsError()"></script>
 </body>
 </html>
