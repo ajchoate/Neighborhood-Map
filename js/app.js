@@ -162,6 +162,10 @@ var ViewModel = {
 	},
 	// Function binds to Show Places button and makes markers appear.
 	showPlaces: function() {
+		// On mobile devices, make clicking the button close the sidebar.
+		if (window.innerWidth < 450) {
+			ViewModel.closeSidebar();
+		}
 		var bounds = new google.maps.LatLngBounds();
 		// Toggle list item & marker visibility to true.
 		for (var i = 0; i < ViewModel.places().length; i++) {
@@ -174,10 +178,6 @@ var ViewModel = {
 			bounds.extend(a.position);
 		}
 		map.fitBounds(bounds);
-		// On mobile devices, make clicking the button close the sidebar.
-		if (window.innerWidth < 450) {
-			ViewModel.closeSidebar();
-		}
 	},
 	// Function binds to Hide Places button and makes markers disappear.
 	hidePlaces: function() {
