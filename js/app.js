@@ -1,6 +1,5 @@
 // NOTE:
 // Code for basic functionality based on Udacity's course on Google Maps APIs.
-// Additonal code for filtering based on W3Schools How To - Filter/Search List Example: https://www.w3schools.com/howto/howto_js_filter_lists.asp
 //
 // Declare global variables
 var map;
@@ -115,6 +114,7 @@ var ViewModel = {
 	 	    		infowindow.setContent("<div class='infoWindow'><h3>" + placeTitle + "</h3><p>" + placeAddress + "</p>" +
 	 	    			"<p><a href='" + placeUrl + "'>" + placeUrl + "</a></p><p>Category: " + placeCategory +
 	 	    			"</p><img alt='Best Photo' src='https://igx.4sqi.net/img/general/width150" + placePhoto + "'></div>");
+	 	    		// Reposition map bounds to fit info window.
 	 	    		var bounds = new google.maps.LatLngBounds();
 					for (var i = 0; i < Model.markers.length; i++) {
 						Model.markers[i].setMap(map);
@@ -149,59 +149,68 @@ var ViewModel = {
 		}
 		createMarkers(Model.libraries);
 		createMarkers(Model.restaurants);
+		// Call addVisibility function to create observable isVisible property for each location.
 		ViewModel.addVisibility();
 	},
-	// Observable value triggers whether list items are visible or hidden.
+	// Create observable version of Model.markers array in the ViewModel.
 	places: ko.observableArray(Model.markers),
+	// Function creates an observable isVisible property in each location object.
 	addVisibility: function() {
 		for (i = 0; i < ViewModel.places().length; i++) {
 			ViewModel.places()[i].isVisible = ko.observable(true);
 		}
 	},
-	// isVisible: ko.observable(true),
 	// Function binds to Show Places button and makes markers appear.
 	showPlaces: function() {
+		var bounds = new google.maps.LatLngBounds();
+		// Toggle list item & marker visibility to true.
+		for (var i = 0; i < ViewModel.places().length; i++) {
+			a = ViewModel.places()[i];
+			// Makes marker visible.
+			a.setVisible(true);
+			// Makes list item visible.
+			a.isVisible(true);
+			// Reposition window to fit marker bounds.
+			bounds.extend(a.position);
+		};
+		map.fitBounds(bounds);
 		// On mobile devices, make clicking the button close the sidebar.
 		if (window.innerWidth < 450) {
 			ViewModel.closeSidebar();
 		}
-		var bounds = new google.maps.LatLngBounds();
-		// Toggle list item & marker visibility.
-		for (var i = 0; i < ViewModel.places().length; i++) {
-			a = ViewModel.places()[i];
-			a.setVisible(true);
-			a.isVisible = true;
-			bounds.extend(a.position);
-		};
-		map.fitBounds(bounds);
 	},
 	// Function binds to Hide Places button and makes markers disappear.
 	hidePlaces: function() {
-		// Toggle list item & marker visibility.
+		// Toggle list item & marker visibility to false.
 		for (var i = 0; i < ViewModel.places().length; i++) {
 			a = ViewModel.places()[i];
+			// Hides marker.
 			a.setVisible(false);
-			a.isVisible = false;
+			// Hides list item.
+			a.isVisible(false);
 		};
 		// On mobile devices, make clicking the button close the sidebar.
 		if (window.innerWidth < 450) {
 			ViewModel.closeSidebar();
 		};
 	},
-	// Function that takes data from input and filters list of places.
+	// Function that takes data from input text box and filters list of places.
 	filter: ko.observable(""),
 	filterPlaces: function() {
 		filter = ViewModel.filter().toUpperCase();
-
 	    // Loop through all list items, and hide those who don't match the search query
 	    for (i = 0; i < ViewModel.places().length; i++) {
 	        a = ViewModel.places()[i];
 	        if (a.title.toUpperCase().indexOf(filter) > -1) {
+	            // Makes marker visible if it matches the filter input.
 	            a.setVisible(true);
-	            a.isVisible = true;
+	            // Makes list item visible if it matches the filter.
+	            a.isVisible(true);
 	        } else {
+	        	// Hides marker if it does not match the filter input.
 	            a.setVisible(false);
-	            a.isVisible = false;
+	            // Hides list item if it does not match the filter.
+	            a.isVisible(false);
 	        }
 	    }
 	},
