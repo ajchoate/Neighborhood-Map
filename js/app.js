@@ -135,7 +135,7 @@ var ViewModel = {
 		// On mobile devices, make clicking the button close the sidebar.
 		if (window.innerWidth < 450) {
 			ViewModel.closeSidebar();
-		};
+		}
 	},
 	// Function within ViewModel that populates all markers & info windows on map.
 	populateMap: function() {
@@ -156,7 +156,7 @@ var ViewModel = {
 	places: ko.observableArray(Model.markers),
 	// Function creates an observable isVisible property in each location object.
 	addVisibility: function() {
-		for (i = 0; i < ViewModel.places().length; i++) {
+		for (var i = 0; i < ViewModel.places().length; i++) {
 			ViewModel.places()[i].isVisible = ko.observable(true);
 		}
 	},
@@ -165,14 +165,14 @@ var ViewModel = {
 		var bounds = new google.maps.LatLngBounds();
 		// Toggle list item & marker visibility to true.
 		for (var i = 0; i < ViewModel.places().length; i++) {
-			a = ViewModel.places()[i];
+			var a = ViewModel.places()[i];
 			// Makes marker visible.
 			a.setVisible(true);
 			// Makes list item visible.
 			a.isVisible(true);
 			// Reposition window to fit marker bounds.
 			bounds.extend(a.position);
-		};
+		}
 		map.fitBounds(bounds);
 		// On mobile devices, make clicking the button close the sidebar.
 		if (window.innerWidth < 450) {
@@ -183,24 +183,24 @@ var ViewModel = {
 	hidePlaces: function() {
 		// Toggle list item & marker visibility to false.
 		for (var i = 0; i < ViewModel.places().length; i++) {
-			a = ViewModel.places()[i];
+			var a = ViewModel.places()[i];
 			// Hides marker.
 			a.setVisible(false);
 			// Hides list item.
 			a.isVisible(false);
-		};
+		}
 		// On mobile devices, make clicking the button close the sidebar.
 		if (window.innerWidth < 450) {
 			ViewModel.closeSidebar();
-		};
+		}
 	},
 	// Function that takes data from input text box and filters list of places.
 	filter: ko.observable(""),
 	filterPlaces: function() {
-		filter = ViewModel.filter().toUpperCase();
+		var filter = ViewModel.filter().toUpperCase();
 	    // Loop through all list items, and hide those who don't match the search query
-	    for (i = 0; i < ViewModel.places().length; i++) {
-	        a = ViewModel.places()[i];
+	    for (var i = 0; i < ViewModel.places().length; i++) {
+	        var a = ViewModel.places()[i];
 	        if (a.title.toUpperCase().indexOf(filter) > -1) {
 	            // Makes marker visible if it matches the filter input.
 	            a.setVisible(true);
