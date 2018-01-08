@@ -19,7 +19,7 @@
 			<button data-bind="click: hidePlaces">Hide Places</button>
 			<input data-bind="textInput: filter, event: {keyup: filterPlaces}" placeholder="Filter list...">
 			<ul id="placesList" data-bind="foreach: places">
-				<li data-bind="text: isVisible, click: $parent.clickMarker, visible: isVisible"></li>
+				<li data-bind="text: title, click: $parent.clickMarker, visible: isVisible"></li>
 			</ul>
 		</div>
 		<div id="map"></div>
