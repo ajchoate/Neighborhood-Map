@@ -41,7 +41,7 @@ var ViewModel = {
 			title: title,
 			icon: markerColor,
 			animation: google.maps.Animation.DROP,
-			id: i	
+			id: i
 		});
 		
 		Model.markers.push(marker);
@@ -69,6 +69,9 @@ var ViewModel = {
 	      	success: function(data) {
 	      		placeVenueId = data.response.venues[0].id;
 				marker.addListener("click", function() {
+					window.setTimeout(function() {
+						marker.setAnimation(google.maps.Animation.BOUNCE);
+					}, 800);
 					ViewModel.populateInfoWindow(this, infowindow, placeVenueId);
 				});
 	      	},
@@ -87,6 +90,7 @@ var ViewModel = {
 			infowindow.marker = marker;
 			infowindow.addListener("closeclick", function() {
 				infowindow.marker = null;
+				marker.setAnimation(null);
 			});
 			// Send Get request to Foursquare's Venue Details API.
 			var foursquareUrl = "https://api.foursquare.com/v2/venues/" + venueId;
@@ -128,6 +132,10 @@ var ViewModel = {
 	// Function to allow places list items to trigger the click event and open info window.
 	clickMarker: function(marker) {
 		google.maps.event.trigger(marker, "click");
+		// On mobile devices, make clicking the button close the sidebar.
+		if (window.innerWidth < 450) {
+			ViewModel.closeSidebar();
+		};
 	},
 	// Function within ViewModel that populates all markers & info windows on map.
 	populateMap: function() {
@@ -141,52 +149,59 @@ var ViewModel = {
 		}
 		createMarkers(Model.libraries);
 		createMarkers(Model.restaurants);
+		ViewModel.addVisibility();
 	},
+	// Observable value triggers whether list items are visible or hidden.
+	places: ko.observableArray(Model.markers),
+	addVisibility: function() {
+		for (i = 0; i < ViewModel.places().length; i++) {
+			ViewModel.places()[i].isVisible = ko.observable(true);
+		}
+	},
+	// isVisible: ko.observable(true),
 	// Function binds to Show Places button and makes markers appear.
 	showPlaces: function() {
-		var bounds = new google.maps.LatLngBounds();
-		for (var i = 0; i < Model.markers.length; i++) {
-			Model.markers[i].setMap(map);
-			bounds.extend(Model.markers[i].position);
+		// On mobile devices, make clicking the button close the sidebar.
+		if (window.innerWidth < 450) {
+			ViewModel.closeSidebar();
 		}
+		var bounds = new google.maps.LatLngBounds();
+		// Toggle list item & marker visibility.
+		for (var i = 0; i < ViewModel.places().length; i++) {
+			a = ViewModel.places()[i];
+			a.setVisible(true);
+			a.isVisible = true;
+			bounds.extend(a.position);
+		};
 		map.fitBounds(bounds);
-		ul = document.getElementById("placesList");
-		li = ul.getElementsByTagName("li");
-		for (i = 0; i < li.length; i++) {
-	        a = li[i].getElementsByTagName("a")[0];
-			li[i].style.display = "";
-		}	
 	},
 	// Function binds to Hide Places button and makes markers disappear.
 	hidePlaces: function() {
-		for (var i = 0; i < Model.markers.length; i++) {
-			Model.markers[i].setMap(null);
-		}
-		ul = document.getElementById("placesList");
-		li = ul.getElementsByTagName("li");
-		for (i = 0; i < li.length; i++) {
-	        a = li[i].getElementsByTagName("a")[0];
-			li[i].style.display = "none";
-		}	
+		// Toggle list item & marker visibility.
+		for (var i = 0; i < ViewModel.places().length; i++) {
+			a = ViewModel.places()[i];
+			a.setVisible(false);
+			a.isVisible = false;
+		};
+		// On mobile devices, make clicking the button close the sidebar.
+		if (window.innerWidth < 450) {
+			ViewModel.closeSidebar();
+		};
 	},
 	// Function that takes data from input and filters list of places.
+	filter: ko.observable(""),
 	filterPlaces: function() {
-		// Declare variables
-		var input, filter, ul, li, a, i;
-	    input = document.getElementById("listFilter");
-	    filter = input.value.toUpperCase();
-	    ul = document.getElementById("placesList");
-	    li = ul.getElementsByTagName('li');
+		filter = ViewModel.filter().toUpperCase();
 
 	    // Loop through all list items, and hide those who don't match the search query
-	    for (i = 0; i < li.length; i++) {
-	        a = Model.markers[i];
+	    for (i = 0; i < ViewModel.places().length; i++) {
+	        a = ViewModel.places()[i];
 	        if (a.title.toUpperCase().indexOf(filter) > -1) {
-	            li[i].style.display = "";
-	            Model.markers[i].setMap(map);
+	            a.setVisible(true);
+	            a.isVisible = true;
 	        } else {
-	            li[i].style.display = "none";
-	            Model.markers[i].setMap(null);
+	            a.setVisible(false);
+	            a.isVisible = false;
 	        }
 	    }
 	},
@@ -197,6 +212,9 @@ var ViewModel = {
 	closeSidebar: function() {
 		document.getElementById("sidebar").style.width = "0px";
 		document.getElementById("map").style.left = "0px";
+	},
+	mapsError: function() {
+		alert("Google Maps failed to load");
 	}
 };
 
